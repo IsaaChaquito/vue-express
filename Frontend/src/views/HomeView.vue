@@ -1,5 +1,5 @@
 <script setup>
-import { reactive, computed, ref } from 'vue';
+import { reactive, computed, ref, onMounted } from 'vue';
 import * as yup from 'yup';
 
 const imageSource = ref("https://alumni.engineering.utoronto.ca/files/2022/05/Avatar-Placeholder-400x400-1-300x300.jpg");
@@ -28,15 +28,23 @@ const rulesValidations = yup.object().shape({
 
 
 async function submitForm() {
-  console.log('Submitted:', JSON.parse(JSON.stringify(formData)));
 
   try {
+
     await rulesValidations.validate(JSON.parse(JSON.stringify(formData)), { abortEarly: false });
-    console.log('Form is valid. Submitted:', JSON.parse(JSON.stringify(formData)));
-    formData.name = '';
-    formData.lastname = '';
-    formData.email = '';
-    formData.phone = '';
+
+    let options = {
+      method: 'POST', headers: {
+        'Content-Type': 'application/json'
+      }, body: JSON.stringify(formData)
+    };
+    let url = 'http://localhost:3000/users';
+
+    fetch(url, options)
+      .then(res => res.json())
+      .then(json => console.log(json))
+      .catch(err => console.error('error:' + err));
+
   } catch (error) {
     if (error instanceof yup.ValidationError) {
       error.inner.forEach((validationError) => {
@@ -66,6 +74,19 @@ const isFormComplete = computed(() => {
   );
 });
 
+onMounted(() => {
+
+  // let url = 'http://localhost:3000/users';
+
+  // let options = { method: 'GET' };
+
+  // fetch(url, options)
+  //   .then(res => res.json())
+  //   .then(json => console.log(json))
+  //   .catch(err => console.error('error:' + err));
+
+});
+
 </script>
 
 <template>
@@ -90,7 +111,8 @@ const isFormComplete = computed(() => {
           <form @submit.prevent="submitForm" class="p-5">
             <div class="mb-3">
               <label class="form-label" for="">Name</label>
-              <input v-model="formData.name" @input="validationErrors.name = ''" type="text" class="form-control" placeholder="John">
+              <input v-model="formData.name" @input="validationErrors.name = ''" type="text" class="form-control"
+                placeholder="John">
 
               <div class="input-errors">
                 <small class="text-danger">{{ validationErrors.name }}</small>
@@ -99,7 +121,8 @@ const isFormComplete = computed(() => {
 
             <div class="mb-3">
               <label class="form-label" for="">Last Name</label>
-              <input v-model="formData.lastname" @input="validationErrors.lastname = ''" type="text" class="form-control" placeholder="Doe">
+              <input v-model="formData.lastname" @input="validationErrors.lastname = ''" type="text" class="form-control"
+                placeholder="Doe">
 
               <div class="input-errors">
                 <small class="text-danger">{{ validationErrors.lastname }}</small>
@@ -108,7 +131,8 @@ const isFormComplete = computed(() => {
 
             <div class="mb-3">
               <label class="form-label" for="">Email</label>
-              <input v-model="formData.email" @input="validationErrors.email = ''" type="text" class="form-control" placeholder="JohnDoe@domain.com">
+              <input v-model="formData.email" @input="validationErrors.email = ''" type="text" class="form-control"
+                placeholder="JohnDoe@domain.com">
               <div class="input-errors">
                 <small class=" text-danger">{{ validationErrors.email }}</small>
               </div>
@@ -116,7 +140,8 @@ const isFormComplete = computed(() => {
 
             <div class="mb-3">
               <label class="form-label" for="">Phone Number</label>
-              <input v-model="formData.phone" @input="validationErrors.phone = ''" type="text" class="form-control" placeholder="00000000">
+              <input v-model="formData.phone" @input="validationErrors.phone = ''" type="text" class="form-control"
+                placeholder="00000000">
 
               <div class="input-errors">
                 <small class="text-danger">{{ validationErrors.phone }}</small>
