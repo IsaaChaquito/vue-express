@@ -5,6 +5,7 @@ const PROCEDURES = require("../procedures/procedures")
 function userController(){
 
   const userCreateHandler = async (req, res) =>{
+
     const result = await execute(req.body, PROCEDURES().USER.CREATE);
     res.status(200).json({
       response: result,

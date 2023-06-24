@@ -1,5 +1,3 @@
-
-
 const joi = require('joi')
 
 const scheme = joi.object({
