@@ -12,7 +12,9 @@
   "dependencies": {
     "@vuelidate/core": "^2.0.2",
     "@vuelidate/validators": "^2.0.2",
+    "axios": "^1.4.0",
     "bootstrap": "^5.3.0",
+    "bootstrap-toaster": "^5.2.0-beta1.1",
     "bootstrap-vue": "^2.23.1",
     "package.json": "^2.0.1",
     "vue": "^3.3.4",

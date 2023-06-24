@@ -25,3 +25,11 @@ body{
   z-index: 1;
   border: solid 2px #201f5a;
 }
+
+.table-container{
+
+
+  height:800px;
+  overflow:scroll;
+
+}

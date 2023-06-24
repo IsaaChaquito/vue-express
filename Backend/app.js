@@ -1,21 +1,21 @@
-const createError = require('http-errors');
-const express = require('express');
+const createError = require("http-errors");
+const express = require("express");
 const cors = require("cors");
-const cookieParser = require('cookie-parser');
-const logger = require('morgan');
-const bodyParser = require('body-parser');
+const cookieParser = require("cookie-parser");
+const logger = require("morgan");
+const bodyParser = require("body-parser");
+const indexRouter = require("./routes/index");
+const usersRouter = require("./routes/users");
+const app = express();
 
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
+app.use(bodyParser.json({ limit: '10mb' }));
+app.use(bodyParser.urlencoded({ limit: '10mb', extended: true }));
 
-var app = express();
-
-app.use(logger('dev'));
+app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(bodyParser.json({ limit: '10mb' }));
-app.use(bodyParser.urlencoded({ extended: true, limit: '10mb' }));
+
 
 app.use(
   cors({
@@ -23,19 +23,18 @@ app.use(
   })
 );
 
-app.use('/', indexRouter);
-app.use('/users', usersRouter);
+app.use("/", indexRouter);
+app.use("/users", usersRouter);
 
-// error handler
-app.use(function(err, req, res, next) {
-  // set locals, only providing error in development
+app.use(function (err, req, res, next) {
   res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
+  res.locals.error = req.app.get("env") === "development" ? err : {};
 
-  // render the error page
   res.status(err.status || 500);
 });
 
-app.listen(()=>{console.log('Server is running')})
+app.listen(() => {
+  console.log("Server is running");
+});
 
 module.exports = app;

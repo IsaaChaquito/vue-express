@@ -28,25 +28,6 @@ const execute = async (params, procedure) => {
   }
 };
 
-// const execute = async (params, procedure) => {
-//   try {
-//     const request = connection.request();
-
-//     for (const key in params) {
-//       request.input(key, params[key]);
-//     }
-
-//     const result = await request.execute(procedure);
-//     const rowsAffected = result.rowsAffected[0];
-
-//     return { success: rowsAffected.includes(1) > 0 ? true : false , data: result};
-//   } catch (err) {
-//     console.error('Error al ejecutar el procedimiento almacenado:', err);
-//     return { success: false, error: err.message };
-//   }
-// };
-
-
 
 const select = async (procedure, params = {}) => {
   const request = connection.request();

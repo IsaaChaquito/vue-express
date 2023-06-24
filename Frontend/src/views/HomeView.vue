@@ -1,6 +1,8 @@
 <script setup>
 import { reactive, computed, ref, onMounted } from 'vue';
 import * as yup from 'yup';
+import axios from "axios";
+import toast from "../Utils/Toast"
 
 const imageSource = ref("https://alumni.engineering.utoronto.ca/files/2022/05/Avatar-Placeholder-400x400-1-300x300.jpg");
 const persons = ref([]);
@@ -28,25 +30,38 @@ const rulesValidations = yup.object().shape({
 });
 
 
+
+function clearInputs() {
+  formData.name = '';
+  formData.lastname = '';
+  formData.email = '';
+  formData.phone = '';
+  formData.profileImage = "https://alumni.engineering.utoronto.ca/files/2022/05/Avatar-Placeholder-400x400-1-300x300.jpg";
+
+  validationErrors.name = '';
+  validationErrors.lastname = '';
+  validationErrors.email = '';
+  validationErrors.phone = '';
+}
+
 async function submitForm() {
+
+  console.log(JSON.parse(JSON.stringify(formData)));
 
   try {
 
     await rulesValidations.validate(JSON.parse(JSON.stringify(formData)), { abortEarly: false });
 
-    let options = {
-      method: 'POST', headers: {
-        'Content-Type': 'application/json'
-      }, body: JSON.stringify(formData)
-    };
-    let url = 'http://localhost:3000/users';
+    const options = { method: 'POST', url: 'http://localhost:3000/users', data: formData };
 
-    fetch(url, options)
-      .then(res => res.json())
-      .then(() => {
-        getAllRecords();
-      })
-      .catch(err => console.error('error:' + err));
+    axios.request(options).then(function (response) {
+      console.log(response.data);
+      getAllRecords();
+      clearInputs();
+      toast('YEI!!!', 'person create success', 'success', 5000).fire();
+    }).catch(function (error) {
+      console.error(error);
+    });
 
   } catch (error) {
     if (error instanceof yup.ValidationError) {
@@ -78,22 +93,19 @@ const isFormComplete = computed(() => {
 });
 
 onMounted(() => {
-
   getAllRecords();
-
 });
 
 const getAllRecords = () => {
 
-  let url = 'http://localhost:3000/users';
-  let options = { method: 'GET' };
+  const options = { method: 'GET', url: 'http://localhost:3000/users' };
 
-  fetch(url, options)
-    .then(res => res.json())
-    .then(json => {
-      persons.value = json;
-    })
-    .catch(err => console.error('error:' + err));
+  axios.request(options).then(function (response) {
+    console.log(response.data);
+    persons.value = response.data;
+  }).catch(function (error) {
+    console.error(error);
+  });
 }
 
 </script>
@@ -102,6 +114,9 @@ const getAllRecords = () => {
   <main>
 
     <div id="register">
+
+      <button @click="clearInputs()">clear</button>
+
       <div class="container min-vh-100">
         <div class="row col-sm-12 col-md-12 col-lg-6 col-xxl-6 mx-auto">
           <div class="card boder border-0 mt-5">
@@ -160,7 +175,7 @@ const getAllRecords = () => {
               </div>
 
               <div class="mt-4 d-flex flex-column">
-                <button :disabled="!isFormComplete" class="btn btn-dark" type="submit">Submit</button>
+                <button class="btn btn-dark" type="submit">Submit</button>
                 <small :hidden="isFormComplete" class="text-danger">Fill the form to enable the button!</small>
               </div>
 
@@ -177,26 +192,33 @@ const getAllRecords = () => {
     </div>
 
     <div id="table" class="min-vh-100">
-      <div class="container mt-5">
+      <div class="container mt-5 py-5">
 
-        <div class="card p-5 col-md-8 mx-auto">
-          <table class="table table-hover  table-responsive">
-            <thead class="">
+        <div class="card p-5 col-md-8 mx-auto table-container">
+          <table class="table table-hover  table-responsive ">
+            <thead class="sticky-top">
               <tr class="">
                 <th scope="col">#</th>
+                <th scope="col">Img</th>
                 <th scope="col">Nombre</th>
                 <th scope="col">Apellido</th>
                 <th scope="col">Correo</th>
                 <th scope="col">Teléfono</th>
+                <th scope="col">Eliminar</th>
               </tr>
             </thead>
             <tbody>
               <tr v-for="(person, i) in persons" :key="i">
                 <td>{{ i + 1 }}</td>
+                <td>
+                  <img class=" border border-4 rounded rounded-circle"
+                    style="height: 50px; width: 50px; object-fit: cover;" :src="person.profileImage" alt="" srcset="">
+                </td>
                 <td>{{ person.name }}</td>
                 <td>{{ person.lastname }}</td>
                 <td>{{ person.email }}</td>
                 <td>{{ person.phone }}</td>
+                <td><button class="btn btn-danger rounded rounded-5"><i class="fa-solid fa-trash-can"></i></button></td>
               </tr>
             </tbody>
           </table>
