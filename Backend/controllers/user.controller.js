@@ -6,6 +6,8 @@ function userController(){
 
   const userCreateHandler = async (req, res) =>{
 
+    console.log(req.body);
+
     const result = await execute(req.body, PROCEDURES().USER.CREATE);
     res.status(200).json({
       response: result,

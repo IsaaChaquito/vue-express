@@ -1,9 +1,9 @@
 const PROCEDURES = () => {
 
     const USER = {
-        CREATE: "sp_user_insert",
-        GET: "sp_user_getAll",
-        GET_BY_ID: "sp_user_get_by_id"
+        CREATE: "sp_person_insert",
+        GET: "sp_person_getAll",
+        GET_BY_ID: "sp_person_get_by_id"
     }
 
     return {USER}

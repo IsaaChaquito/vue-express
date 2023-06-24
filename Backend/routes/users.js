@@ -8,6 +8,6 @@ const validateUser = require('../validations/user.validations')
 router.get('/', userController().userGetHandler)
 
 /* GET users listing. */
-router.post('/', validateUser, userController().userCreateHandler)
+router.post('/', userController().userCreateHandler)
 
 module.exports = router;
