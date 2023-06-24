@@ -30,7 +30,6 @@ const rulesValidations = yup.object().shape({
 });
 
 
-
 function clearInputs() {
   formData.name = '';
   formData.lastname = '';
